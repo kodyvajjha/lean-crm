@@ -21,7 +21,7 @@ local attribute [instance] classical.prop_decidable
 
 section random_variable
 
-def is_random_variable (X : s → ℝ) := measurable X
+-- def is_random_variable (X : s → ℝ) := measurable X
 
 -- lemma is_random_variable_leq (X : s → ℝ) :
 -- is_random_variable(X) ↔ ∀ x:ℝ, is_measurable({ω : s | X ω ≤ x}) :=
@@ -49,8 +49,6 @@ def is_random_variable (X : s → ℝ) := measurable X
 
 -- }
 -- end
-
--- #print instances complete_lattice
 
 noncomputable def indicator (a : set s) :=(λ x : s, if x ∈ a then (1:ℝ) else 0)
 
@@ -132,33 +130,33 @@ begin
   }
 end
 
-lemma is_random_variable_indicator {a : set s} (g : is_measurable a) : is_random_variable(indicator a) :=
+lemma is_random_variable_indicator {a : set s} (g : is_measurable a) : measurable(indicator a) :=
 begin
-intros b h,
-unfold measurable_space.map, dsimp,
-by_cases g₁: ((0:ℝ) ∈ b),
-{
-  by_cases g₂: ((1:ℝ) ∈ b),
-  rw indicator_map_1 a b g₁ g₂, apply is_measurable.univ,
-  rw indicator_map_3 a b g₁ g₂, apply is_measurable.compl g,
-},
-{
-  by_cases g₂: ((1:ℝ) ∈ b),
-  rw indicator_map_2 a b g₁ g₂, assumption,
-  rw indicator_map_4 a b g₁ g₂, apply is_measurable.empty,
-}
+  intros b h,
+  unfold measurable_space.map, dsimp,
+  by_cases g₁: ((0:ℝ) ∈ b),
+  {
+    by_cases g₂: ((1:ℝ) ∈ b),
+    rw indicator_map_1 a b g₁ g₂, apply is_measurable.univ,
+    rw indicator_map_3 a b g₁ g₂, apply is_measurable.compl g,
+  },
+  {
+    by_cases g₂: ((1:ℝ) ∈ b),
+    rw indicator_map_2 a b g₁ g₂, assumption,
+    rw indicator_map_4 a b g₁ g₂, apply is_measurable.empty,
+  }
 end
 
-lemma is_random_variable_add (X Y : s → ℝ) (h₁ : is_random_variable X) (h₂ : is_random_variable Y) :
-is_random_variable( X + Y ) :=
+lemma is_random_variable_add (X Y : s → ℝ) (h₁ : measurable X) (h₂ : measurable Y) :
+measurable( X + Y ) :=
 begin
-apply measurable_add, repeat{assumption},
+  apply measurable_add, repeat{assumption},
 end
 
-lemma is_random_variable_mul (X Y : s → ℝ) (h₁ : is_random_variable X) (h₂ : is_random_variable Y) :
-is_random_variable( X * Y ) :=
+lemma is_random_variable_mul (X Y : s → ℝ) (h₁ : measurable X) (h₂ : measurable Y) :
+measurable( X * Y ) :=
 begin
-apply measure_theory.measurable_mul, repeat{assumption},
+  apply measure_theory.measurable_mul, repeat{assumption},
 end
 
 -- theorem is_random_variable_lim' (Z : ℕ → (s → α))
@@ -185,8 +183,9 @@ end
 end random_variable
 
 section distribution_function
+-- variables (X : s → ℝ) [measurable X]
 
-def distribution_function (X : s → ℝ) :=
+def distribution_function {X : s → ℝ} (hX : measurable X) :=
 (λ x:ℝ, prob p({ω : s | X(ω) ≤ x}))
 
 end distribution_function
