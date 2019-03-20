@@ -1,6 +1,7 @@
 import .random_variable
 import measure_theory.measure_space
 import measure_theory.integration
+import tactic.find
 
 open lattice measure_theory ennreal set
 
@@ -35,5 +36,11 @@ structure uniform_distribution (s : Type*) [probability_space s](p : probability
 
 def expectation : ennreal := measure.integral (@probability_measure.to_measure s _ p) (λ (ω :s), ennreal.of_real (X ω)) 
 
+def ess_sup (X : s → ℝ) : ennreal := 
+if {a : ennreal | prob p ({x | X x > ennreal.to_real a})= 0} ≠ ∅ then Inf {a : ennreal | prob p ({x | X x > ennreal.to_real a})= 0} else ⊤ 
+
+def ess_inf (X : s → ℝ) : ennreal := 
+if { b : ennreal | prob p ({x | X x < ennreal.to_real b})= 0} ≠ ∅ then Sup { b : ennreal | prob p ({x | X x < ennreal.to_real b})= 0} else ⊥ 
+ 
 -- structure coherent_risk_measure :=
 -- (to_fun : )
